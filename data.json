@@ -4,40 +4,29 @@
   "event_date": "2026-07-16",
   "campaign_start": "2026-07-03",
   "days_left": 10,
-  "targets": {
-    "cpl": 60.0,
-    "budget": 7000.0,
-    "leads_pagos": 120,
-    "organico": 30,
-    "total": 150
-  },
+  "daily_budget": 600.0,
   "kpis": {
     "inscritos": 21,
     "leads_pagos": 18,
     "organico": 3,
     "medicos": 18,
     "pct_medico": 85.7,
-    "spend": 1145.45,
-    "impressions": 19655,
+    "spend": 1150.88,
+    "impressions": 19827,
     "clicks": 192,
     "lpv": 146,
-    "cpl_real": 63.64,
-    "cpc": 5.97,
-    "conv_lpv_lead": 12.3,
-    "pct_budget_gasto": 16.4
+    "cpl_real": 63.94,
+    "cpc": 5.99,
+    "conv_lpv_lead": 12.3
   },
   "pace": {
     "full_days": 3,
     "paid_per_day": 5.0,
     "total_per_day": 5.7,
     "spend_per_day": 317.71,
-    "need_paid_per_day": 9.3,
-    "budget_per_day_needed": 532.23,
     "proj_paid": 73,
     "proj_total": 83,
-    "proj_spend": 4640.22,
-    "on_track_leads": false,
-    "on_track_cpl": false
+    "proj_spend": 4645.65
   },
   "series": [
     {
@@ -71,44 +60,44 @@
       "day": "2026-07-06",
       "leads_paid": 3,
       "leads_total": 4,
-      "spend": 192.33,
+      "spend": 197.76,
       "cum_paid": 18,
       "cum_total": 21,
-      "cum_spend": 1145.45
+      "cum_spend": 1150.88
     }
   ],
   "ads": [
     {
       "ad": "ad01",
       "label": "Live Betina e Jorge",
-      "spend": 662.85,
+      "spend": 662.94,
       "leads": 7,
       "lpv": 81,
-      "cpl": 94.69
+      "cpl": 94.71
     },
     {
       "ad": "ad02",
       "label": "Estetica ou Clinica",
-      "spend": 232.09,
+      "spend": 233.94,
       "leads": 3,
       "lpv": 28,
-      "cpl": 77.36
+      "cpl": 77.98
     },
     {
       "ad": "ad04",
       "label": "Conversa de Dermatologista",
-      "spend": 193.14,
+      "spend": 193.78,
       "leads": 6,
       "lpv": 29,
-      "cpl": 32.19
+      "cpl": 32.3
     },
     {
       "ad": "ad03",
       "label": "Futuro da Dermato Clinica",
-      "spend": 57.35,
+      "spend": 60.04,
       "leads": 2,
       "lpv": 8,
-      "cpl": 28.68
+      "cpl": 30.02
     }
   ]
 }

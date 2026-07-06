@@ -9,7 +9,7 @@
     --navy:#143250; --navy2:#1d4b78; --ink:#0f1d2b; --muted:#6b7c8f;
     --line:#e6ebf0; --bg:#eef1f5; --card:#fff;
     --good:#159b62; --good-bg:#e7f6ee; --warn:#d98a1f; --warn-bg:#fcf3e2;
-    --bad:#d6453d; --bad-bg:#fbeae9; --accent:#2a7de1; --accent2:#7aa9d6;
+    --bad:#d6453d; --bad-bg:#fbeae9; --accent:#2a7de1;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -23,13 +23,10 @@
   .count{text-align:right}
   .count .big{font-size:34px;font-weight:800;color:var(--navy);line-height:1}
   .count .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
-  .verdict{border-radius:14px;padding:18px 22px;margin-bottom:24px;display:flex;gap:16px;align-items:flex-start}
-  .verdict .dot{width:14px;height:14px;border-radius:50%;flex:0 0 auto;margin-top:5px}
-  .verdict h2{font-size:18px;font-weight:800;margin-bottom:4px}
-  .verdict p{font-size:14px;opacity:.92}
-  .v-bad{background:var(--bad-bg);color:#7e211c}.v-bad .dot{background:var(--bad)}
-  .v-warn{background:var(--warn-bg);color:#7a4d0e}.v-warn .dot{background:var(--warn)}
-  .v-good{background:var(--good-bg);color:#0c5e3a}.v-good .dot{background:var(--good)}
+  .banner{background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 20px;margin-bottom:24px}
+  .banner h2{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:4px}
+  .banner p{font-size:14px;color:var(--ink);opacity:.9}
   .seclab{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
     color:var(--muted);margin:26px 0 12px}
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -44,8 +41,6 @@
   .pill.good{background:var(--good-bg);color:var(--good)}
   .pill.warn{background:var(--warn-bg);color:var(--warn)}
   .pill.bad{background:var(--bad-bg);color:var(--bad)}
-  .bar{height:7px;border-radius:5px;background:#eaeef2;margin-top:11px;overflow:hidden}
-  .bar > i{display:block;height:100%;border-radius:5px}
   .pace{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   @media(max-width:780px){.pace{grid-template-columns:1fr}}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:18px 20px}
@@ -95,22 +90,22 @@
     </div>
   </header>
 
-  <div class="verdict" id="verdict">
-    <div class="dot"></div>
-    <div><h2 id="v-title"></h2><p id="v-text"></p></div>
+  <div class="banner">
+    <h2 id="b-title"></h2>
+    <p id="b-text"></p>
   </div>
 
-  <div class="seclab">Como estamos vs a meta</div>
+  <div class="seclab">Números da captação</div>
   <div class="grid" id="kpis"></div>
 
-  <div class="seclab" id="pace-lab">Ritmo e projeção até a live</div>
+  <div class="seclab" id="pace-lab">Ritmo e projeção (run-rate, sem meta)</div>
   <div class="pace">
     <div class="panel">
       <h3>Ritmo de inscritos</h3>
       <div id="pace-leads"></div>
     </div>
     <div class="panel">
-      <h3>Uso da verba de anúncios</h3>
+      <h3>Investimento em anúncios</h3>
       <div id="pace-budget"></div>
     </div>
   </div>
@@ -118,8 +113,8 @@
   <div class="seclab">Evolução dos inscritos</div>
   <div class="charts">
     <div class="chartbox">
-      <h3>Inscritos pelos anúncios — acumulado vs meta</h3>
-      <div class="hint" id="burnup-hint"></div>
+      <h3>Inscritos por anúncio — acumulado</h3>
+      <div class="hint">Total de inscritos vindos dos anúncios somado dia a dia.</div>
       <div class="cw" id="burnup"></div>
     </div>
     <div class="chartbox">
@@ -135,7 +130,7 @@
     <tbody></tbody>
   </table>
 
-  <div class="seclab">Resumo para a diretoria</div>
+  <div class="seclab">Leitura</div>
   <div id="actions"></div>
 
   <footer>
@@ -149,111 +144,79 @@ const DATA = __DATA__;
 const BRL = n => "R$ " + Math.round(n||0).toLocaleString("pt-BR");
 const NUM = n => (n||0).toLocaleString("pt-BR");
 const fmtDay = d => { const [y,m,dd]=d.split("-"); return dd+"/"+m; };
-const k = DATA.kpis, p = DATA.pace, t = DATA.targets;
+const k = DATA.kpis, p = DATA.pace;
 
 // header
 document.getElementById("sub").textContent =
   `Anúncios no ar desde ${fmtDay(DATA.campaign_start)} · Live ${fmtDay(DATA.event_date)} · dados de ${fmtDay(DATA.today)}`;
 document.getElementById("cd-days").textContent = DATA.days_left;
 document.getElementById("cd-lbl").textContent = DATA.days_left>0 ? "dias até a live" : "live realizada";
-document.getElementById("pace-lab").textContent = `Ritmo e projeção até a live (${fmtDay(DATA.event_date)})`;
-document.getElementById("burnup-hint").textContent =
-  `A linha pontilhada mostra onde precisaríamos estar a cada dia para chegar a ${t.leads_pagos} até a live.`;
 document.getElementById("ft-updated").textContent = "Atualizado em " + DATA.updated_at.replace("T"," ").slice(0,16);
 
-// verdict
-const projGapPaid = p.proj_paid / t.leads_pagos;
-let vcls, vtitle;
-if (p.proj_paid >= t.leads_pagos*0.95 && k.cpl_real <= t.cpl*1.05){
-  vcls="v-good"; vtitle="No caminho de bater a meta";
-} else if (p.proj_paid >= t.leads_pagos*0.7){
-  vcls="v-warn"; vtitle="Atenção: ritmo abaixo do necessário";
-} else {
-  vcls="v-bad"; vtitle="Abaixo do ritmo — meta em risco";
-}
-const acel = p.paid_per_day>0 ? (p.need_paid_per_day/p.paid_per_day).toFixed(1) : "–";
-const vtext =
-  `No ritmo de hoje (${p.paid_per_day} inscritos por dia vindos dos anúncios), a live fecha com cerca de `
-  + `${p.proj_paid} inscritos por anúncios — ${Math.round(projGapPaid*100)}% da meta de ${t.leads_pagos}. `
-  + `Para bater a meta seriam precisos ${p.need_paid_per_day} inscritos por dia (${acel}x o ritmo atual). `
-  + `O custo por inscrito hoje é ${BRL(k.cpl_real)} — a meta é ${BRL(t.cpl)}. `
-  + `${k.pct_medico}% dos inscritos são médicos.`;
-const vd = document.getElementById("verdict");
-vd.className = "verdict "+vcls;
-document.getElementById("v-title").textContent = vtitle;
-document.getElementById("v-text").textContent = vtext;
+// banner neutro (fatos, sem meta)
+document.getElementById("b-title").textContent = "Captação em andamento";
+document.getElementById("b-text").textContent =
+  `${NUM(k.inscritos)} inscritos até agora (${NUM(k.leads_pagos)} pelos anúncios, ${NUM(k.organico)} espontâneos), `
+  + `${k.pct_medico}% médicos. Custo por inscrito de ${BRL(k.cpl_real)}, ${BRL(k.spend)} investidos em ${p.full_days} dias. `
+  + `No ritmo atual (${p.paid_per_day}/dia) a live fecha com ~${p.proj_paid} inscritos por anúncios.`;
 
-// KPIs
-function pct(a,b){return b? Math.min(100, Math.round(100*a/b)) : 0;}
-function colorFor(ratio,invert){
-  if(invert){ if(ratio<=1.0)return"good"; if(ratio<=1.1)return"warn"; return"bad";}
-  if(ratio>=0.95)return"good"; if(ratio>=0.6)return"warn"; return"bad";
-}
-const barc = {good:"var(--good)",warn:"var(--warn)",bad:"var(--bad)"};
+// KPIs — valores absolutos, sem % de meta
 const kpis = [
-  {k:"Inscritos na live", v:NUM(k.inscritos), small:"de "+t.total, p:pct(k.inscritos,t.total), c:colorFor(k.inscritos/t.total), meta:pct(k.inscritos,t.total)+"% da meta de "+t.total+" inscritos"},
-  {k:"Vindos de anúncios", v:NUM(k.leads_pagos), small:"de "+t.leads_pagos, p:pct(k.leads_pagos,t.leads_pagos), c:colorFor(k.leads_pagos/t.leads_pagos), meta:pct(k.leads_pagos,t.leads_pagos)+"% da meta de anúncios"},
-  {k:"Inscritos espontâneos", v:NUM(k.organico), small:"de "+t.organico, p:pct(k.organico,t.organico), c:colorFor(k.organico/t.organico), meta:"sem custo de mídia; cresce perto da live"},
-  {k:"Custo por inscrito", v:BRL(k.cpl_real), small:"meta "+BRL(t.cpl), p:k.cpl_real?Math.min(100,Math.round(100*t.cpl/k.cpl_real)):0, c:colorFor(k.cpl_real/t.cpl,true), meta:(k.cpl_real>t.cpl?Math.round(100*(k.cpl_real/t.cpl-1))+"% acima da meta":"dentro da meta")},
-  {k:"Investido em anúncios", v:BRL(k.spend), small:"de "+BRL(t.budget), p:pct(k.spend,t.budget), c:k.pct_budget_gasto<40?"bad":(k.pct_budget_gasto<70?"warn":"good"), meta:k.pct_budget_gasto+"% da verba usada · "+(DATA.days_left)+" dias restantes"},
-  {k:"Público médico", v:k.pct_medico+"%", small:k.medicos+" de "+k.inscritos, p:Math.round(k.pct_medico), c:k.pct_medico>=85?"good":(k.pct_medico>=60?"warn":"bad"), meta:"declararam ser médicos"},
+  {k:"Inscritos na live", v:NUM(k.inscritos), meta:`${NUM(k.leads_pagos)} por anúncios · ${NUM(k.organico)} espontâneos`},
+  {k:"Vindos de anúncios", v:NUM(k.leads_pagos), meta:`inscritos atribuídos à campanha paga`},
+  {k:"Custo por inscrito", v:BRL(k.cpl_real), meta:`CPC de ${BRL(k.cpc)} · ${NUM(k.clicks)} cliques no link`},
+  {k:"Investido em anúncios", v:BRL(k.spend), meta:`verba de ${BRL(DATA.daily_budget)}/dia · ~${BRL(p.spend_per_day)}/dia entregues`},
+  {k:"Conversão da página", v:k.conv_lpv_lead+"%", meta:`${NUM(k.lpv)} abriram a página · ${NUM(k.leads_pagos)} se inscreveram`, pill: k.conv_lpv_lead>=25?"good":(k.conv_lpv_lead>=18?"warn":"bad")},
+  {k:"Público médico", v:k.pct_medico+"%", meta:`${k.medicos} de ${k.inscritos} declararam ser médicos`, pill: k.pct_medico>=85?"good":(k.pct_medico>=60?"warn":"bad")},
 ];
 document.getElementById("kpis").innerHTML = kpis.map(c=>`
   <div class="card">
     <div class="k">${c.k}</div>
-    <div class="v">${c.v} <small>${c.small||""}</small> <span class="pill ${c.c}">${c.p}%</span></div>
+    <div class="v">${c.v}${c.pill?` <span class="pill ${c.pill}">${c.k==="Público médico"?"qualidade":"conversão"}</span>`:""}</div>
     <div class="meta">${c.meta}</div>
-    <div class="bar"><i style="width:${c.p}%;background:${barc[c.c]}"></i></div>
   </div>`).join("");
 
 // pace
 function rate(lab,num,cls){return `<div class="rate"><span class="lab">${lab}</span><span class="num ${cls||''}">${num}</span></div>`;}
 document.getElementById("pace-leads").innerHTML =
-  rate("Entrando por dia (hoje)", p.paid_per_day+" inscritos")
- +rate("Precisaria entrar por dia", p.need_paid_per_day+" inscritos","warn")
- +rate("Quanto precisa acelerar", acel+"x", p.need_paid_per_day>p.paid_per_day?"bad":"good")
- +rate("Projeção no ritmo de hoje", p.proj_paid+" inscritos", p.proj_paid>=t.leads_pagos*0.95?"good":(p.proj_paid>=t.leads_pagos*0.7?"warn":"bad"))
+  rate("Inscritos por dia (média)", p.paid_per_day+" pagos")
+ +rate("Total por dia (com espontâneos)", p.total_per_day+" inscritos")
+ +rate("Projeção no ritmo de hoje", "~"+p.proj_paid+" pagos até a live")
  +rate("De cada 100 que abrem a página", k.conv_lpv_lead+" se inscrevem", k.conv_lpv_lead>=25?"good":"warn");
 document.getElementById("pace-budget").innerHTML =
-  rate("Investido por dia (hoje)", BRL(p.spend_per_day))
- +rate("Precisaria investir por dia", BRL(p.budget_per_day_needed),"warn")
- +rate("Verba ainda disponível", BRL(Math.max(0,t.budget-k.spend)))
- +rate("Projeção de gasto até a live", BRL(p.proj_spend))
- +rate("CPC (custo por clique no link)", BRL(k.cpc));
+  rate("Investido por dia (média)", BRL(p.spend_per_day))
+ +rate("Verba configurada por dia", BRL(DATA.daily_budget), p.spend_per_day < DATA.daily_budget*0.8 ? "warn":"good")
+ +rate("Total investido", BRL(k.spend))
+ +rate("Projeção de gasto até a live", "~"+BRL(p.proj_spend));
 
 // gráficos SVG nativos
 const compact = v => v>=1000 ? (v/1000).toFixed(1).replace(".0","")+"k" : Math.round(v);
 
 function svgBurnup(){
   const W=640,H=240,L=40,R=16,T=24,B=28, iw=W-L-R, ih=H-T-B;
-  const s=DATA.series, n=s.length, cum=s.map(x=>x.cum_paid);
-  const start=new Date(DATA.campaign_start), end=new Date(DATA.event_date);
-  const td=(end-start)/86400000 || 1;
-  const meta=s.map(x=>Math.round(t.leads_pagos*((new Date(x.day)-start)/86400000)/td));
-  const ymax=Math.max(10,...cum,...meta)*1.15;
+  const s=DATA.series, n=s.length; if(!n){return "<div style='color:#6b7c8f;font-size:12px'>sem dados ainda</div>";}
+  const cum=s.map(x=>x.cum_paid);
+  const ymax=Math.max(5,...cum)*1.18;
   const X=i=> L+(n<=1?iw/2:iw*i/(n-1)), Y=v=> T+ih-ih*v/ymax, base=T+ih;
   let g="";
   for(let i=0;i<=4;i++){const v=ymax*i/4,yy=Y(v);
     g+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#eef1f4"/>`;
     g+=`<text x="${L-6}" y="${yy+3}" text-anchor="end" font-size="10" fill="#6b7c8f">${Math.round(v)}</text>`;}
   s.forEach((x,i)=> g+=`<text x="${X(i)}" y="${H-9}" text-anchor="middle" font-size="10" fill="#6b7c8f">${fmtDay(x.day)}</text>`);
-  const mp=meta.map((v,i)=>`${X(i)},${Y(v)}`).join(" ");
-  g+=`<polyline points="${mp}" fill="none" stroke="#d6453d" stroke-width="1.6" stroke-dasharray="5 4"/>`;
   const rp=cum.map((v,i)=>`${X(i)},${Y(v)}`).join(" ");
   g+=`<polygon points="${L},${base} ${rp} ${X(n-1)},${base}" fill="rgba(20,50,80,.08)"/>`;
   g+=`<polyline points="${rp}" fill="none" stroke="#143250" stroke-width="2.5"/>`;
   cum.forEach((v,i)=> g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="#143250"/>`);
   g+=`<text x="${X(n-1)}" y="${Y(cum[n-1])-9}" text-anchor="middle" font-size="11" font-weight="700" fill="#143250">${cum[n-1]}</text>`;
-  g+=`<rect x="${L}" y="6" width="11" height="3" fill="#143250"/><text x="${L+15}" y="9" font-size="10" fill="#6b7c8f">Inscritos reais</text>`;
-  g+=`<rect x="${L+108}" y="6" width="11" height="3" fill="#d6453d"/><text x="${L+123}" y="9" font-size="10" fill="#6b7c8f">Onde deveríamos estar</text>`;
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" font-family="Inter,sans-serif">${g}</svg>`;
 }
 
 function svgDaily(){
   const W=440,H=240,L=30,R=38,T=26,B=28, iw=W-L-R, ih=H-T-B;
-  const s=DATA.series,n=s.length, leads=s.map(x=>x.leads_total), spend=s.map(x=>x.spend);
+  const s=DATA.series,n=s.length; if(!n){return "<div style='color:#6b7c8f;font-size:12px'>sem dados ainda</div>";}
+  const leads=s.map(x=>x.leads_total), spend=s.map(x=>x.spend);
   const ymaxL=Math.max(1,...leads)*1.35, ymaxR=Math.max(1,...spend)*1.3;
-  const bw=Math.min(34, iw/Math.max(n,1)*0.5), cx=i=> L+iw*(i+0.5)/Math.max(n,1);
+  const bw=Math.min(34, iw/n*0.5), cx=i=> L+iw*(i+0.5)/n;
   const YL=v=> T+ih-ih*v/ymaxL, YR=v=> T+ih-ih*v/ymaxR, base=T+ih;
   let g="";
   for(let i=0;i<=3;i++){const v=ymaxL*i/3,yy=YL(v);
@@ -274,14 +237,15 @@ function svgDaily(){
 document.getElementById("burnup").innerHTML = svgBurnup();
 document.getElementById("daily").innerHTML = svgDaily();
 
-// tabela de anúncios
-const maxSpend = Math.max(1,...DATA.ads.map(a=>a.spend));
+// tabela de anúncios — tags relativas (melhor/pior custo do conjunto), sem meta
+const withCpl = DATA.ads.filter(a=>a.cpl);
+const bestCpl = withCpl.length ? Math.min(...withCpl.map(a=>a.cpl)) : null;
 const tb = document.querySelector("#ads-table tbody");
 tb.innerHTML = DATA.ads.filter(a=>a.spend>0||a.leads>0).map(a=>{
   let tag="";
-  if(a.cpl && a.cpl<=t.cpl && a.spend>=maxSpend*0.3) tag=`<span class="tag win">melhor custo</span>`;
-  else if(a.cpl && a.cpl>t.cpl*1.5) tag=`<span class="tag kill">custo alto</span>`;
-  const cplc = a.cpl ? (a.cpl<=t.cpl?"var(--good)":(a.cpl<=t.cpl*1.3?"var(--warn)":"var(--bad)")) : "var(--muted)";
+  if(bestCpl && a.cpl===bestCpl && withCpl.length>1) tag=`<span class="tag win">melhor custo</span>`;
+  else if(bestCpl && a.cpl && a.cpl>=bestCpl*2) tag=`<span class="tag kill">custo alto</span>`;
+  const cplc = a.cpl ? (a.cpl<=bestCpl*1.3?"var(--good)":(a.cpl<=bestCpl*2?"var(--warn)":"var(--bad)")) : "var(--muted)";
   return `<tr>
     <td class="ad">${a.label}${tag}</td>
     <td>${BRL(a.spend)}</td>
@@ -290,28 +254,28 @@ tb.innerHTML = DATA.ads.filter(a=>a.spend>0||a.leads>0).map(a=>{
   </tr>`;
 }).join("");
 
-// resumo diretoria (data-driven)
-const best = DATA.ads.filter(a=>a.cpl).sort((x,y)=>x.cpl-y.cpl)[0];
+// leitura (data-driven, sem meta)
+const best = withCpl.slice().sort((x,y)=>x.cpl-y.cpl)[0];
+const worst = withCpl.slice().sort((x,y)=>y.cpl-x.cpl)[0];
 const convBaixa = k.conv_lpv_lead>0 && k.conv_lpv_lead<20;
-const gastoLento = k.pct_budget_gasto<70;
-let els = "";
-els += `<div class="note"><h4>Onde estamos</h4><ul>`
-  + `<li>Em ${p.full_days} dias de anúncios: <b>${k.inscritos} inscritos</b> (${k.leads_pagos} pelos anúncios, ${k.organico} espontâneos), com <b>${k.pct_medico}% de médicos</b>.</li>`
-  + `<li>Custo por inscrito de <b>${BRL(k.cpl_real)}</b> ${k.cpl_real<=t.cpl?"— dentro da meta de "+BRL(t.cpl)+".":"contra a meta de "+BRL(t.cpl)+" ("+Math.round(100*(k.cpl_real/t.cpl-1))+"% acima)."}</li>`
-  + `<li>No ritmo atual a live fecha com ~<b>${p.proj_paid} inscritos por anúncios</b> (${Math.round(projGapPaid*100)}% da meta) e ~${BRL(p.proj_spend)} investidos.</li>`
+const gastoLento = DATA.daily_budget>0 && p.spend_per_day < DATA.daily_budget*0.8;
+let els = `<div class="note"><h4>Onde estamos</h4><ul>`
+  + `<li><b>${k.inscritos} inscritos</b> em ${p.full_days} dias (${k.leads_pagos} pelos anúncios), com <b>${k.pct_medico}% de médicos</b> — público certo.</li>`
+  + `<li>Custo por inscrito de <b>${BRL(k.cpl_real)}</b>; ${BRL(k.spend)} investidos (~${BRL(p.spend_per_day)}/dia).</li>`
   + `</ul></div>`;
 if(convBaixa){
   const leadsSe = Math.round(k.lpv*0.25), custoSe = BRL(k.spend/Math.max(1,k.lpv*0.25));
-  els += `<div class="note flag"><h4>Maior oportunidade: a página de inscrição</h4><ul>`
+  els += `<div class="note flag"><h4>Maior alavanca: a página de inscrição</h4><ul>`
     + `<li>De cada 100 que abrem a página, só <b>${k.conv_lpv_lead}</b> se inscrevem (o normal p/ evento gratuito é 25–40).</li>`
     + `<li>A 25% de conversão, os mesmos visitantes virariam ~<b>${leadsSe} inscritos</b> e o custo cairia p/ ~<b>${custoSe}</b> — sem gastar a mais. Simplificar o formulário é a ação de maior retorno.</li>`
     + `</ul></div>`;
 }
-els += `<div class="note"><h4>O que vamos fazer</h4><ul>`
-  + (gastoLento ? `<li><b>Acelerar o investimento</b> — no ritmo atual sobra verba sem uso antes da live.</li>` : `<li><b>Manter o ritmo de investimento</b>, que está aderente à verba prevista.</li>`)
-  + (best ? `<li><b>Escalar o anúncio de melhor custo</b> ("${best.label}", ${BRL(best.cpl)} por inscrito) e cortar os de custo alto.</li>` : `<li>Consolidar os primeiros dados por anúncio p/ decidir onde escalar.</li>`)
-  + `<li><b>Reforçar a divulgação espontânea</b> (e-mail e redes) nos dias finais, quando ela costuma trazer mais gente.</li>`
-  + `</ul></div>`;
+if(best){
+  els += `<div class="note"><h4>Por anúncio</h4><ul>`
+    + `<li>Melhor custo: <b>${best.label}</b> (${BRL(best.cpl)}/inscrito)${worst&&worst!==best?`; pior: <b>${worst.label}</b> (${BRL(worst.cpl)})`:""} — espaço pra remanejar verba pro de melhor custo.</li>`
+    + (gastoLento?`<li>A campanha está entregando ~${BRL(p.spend_per_day)}/dia contra ${BRL(DATA.daily_budget)}/dia configurados — <b>subgastando a verba</b>.</li>`:"")
+    + `</ul></div>`;
+}
 document.getElementById("actions").innerHTML = els;
 </script>
 </body>
