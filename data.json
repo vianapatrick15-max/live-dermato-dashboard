@@ -1,0 +1,114 @@
+{
+  "updated_at": "2026-07-06T00:00:00",
+  "today": "2026-07-06",
+  "event_date": "2026-07-16",
+  "campaign_start": "2026-07-03",
+  "days_left": 10,
+  "targets": {
+    "cpl": 60.0,
+    "budget": 7000.0,
+    "leads_pagos": 120,
+    "organico": 30,
+    "total": 150
+  },
+  "kpis": {
+    "inscritos": 21,
+    "leads_pagos": 18,
+    "organico": 3,
+    "medicos": 18,
+    "pct_medico": 85.7,
+    "spend": 1142.55,
+    "impressions": 19640,
+    "clicks": 192,
+    "lpv": 146,
+    "cpl_real": 63.47,
+    "cpc": 5.95,
+    "conv_lpv_lead": 12.3,
+    "pct_budget_gasto": 16.3
+  },
+  "pace": {
+    "full_days": 3,
+    "paid_per_day": 5.0,
+    "total_per_day": 5.7,
+    "spend_per_day": 317.71,
+    "need_paid_per_day": 9.3,
+    "budget_per_day_needed": 532.5,
+    "proj_paid": 73,
+    "proj_total": 83,
+    "proj_spend": 4637.32,
+    "on_track_leads": false,
+    "on_track_cpl": false
+  },
+  "series": [
+    {
+      "day": "2026-07-03",
+      "leads_paid": 4,
+      "leads_total": 4,
+      "spend": 180.56,
+      "cum_paid": 4,
+      "cum_total": 4,
+      "cum_spend": 180.56
+    },
+    {
+      "day": "2026-07-04",
+      "leads_paid": 7,
+      "leads_total": 9,
+      "spend": 433.22,
+      "cum_paid": 11,
+      "cum_total": 13,
+      "cum_spend": 613.78
+    },
+    {
+      "day": "2026-07-05",
+      "leads_paid": 4,
+      "leads_total": 4,
+      "spend": 339.34,
+      "cum_paid": 15,
+      "cum_total": 17,
+      "cum_spend": 953.12
+    },
+    {
+      "day": "2026-07-06",
+      "leads_paid": 3,
+      "leads_total": 4,
+      "spend": 189.43,
+      "cum_paid": 18,
+      "cum_total": 21,
+      "cum_spend": 1142.55
+    }
+  ],
+  "ads": [
+    {
+      "ad": "ad01",
+      "label": "Live Betina e Jorge",
+      "spend": 662.65,
+      "leads": 7,
+      "lpv": 81,
+      "cpl": 94.66
+    },
+    {
+      "ad": "ad02",
+      "label": "Estetica ou Clinica",
+      "spend": 230.88,
+      "leads": 3,
+      "lpv": 28,
+      "cpl": 76.96
+    },
+    {
+      "ad": "ad04",
+      "label": "Conversa de Dermatologista",
+      "spend": 191.68,
+      "leads": 6,
+      "lpv": 29,
+      "cpl": 31.95
+    },
+    {
+      "ad": "ad03",
+      "label": "Futuro da Dermato Clinica",
+      "spend": 57.34,
+      "leads": 2,
+      "lpv": 8,
+      "cpl": 28.67
+    }
+  ]
+}
