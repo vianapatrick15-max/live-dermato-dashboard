@@ -6,27 +6,27 @@
   "days_left": 9,
   "daily_budget": 500.0,
   "kpis": {
-    "inscritos": 36,
-    "leads_pagos": 33,
+    "inscritos": 39,
+    "leads_pagos": 36,
     "organico": 3,
-    "medicos": 27,
-    "pct_medico": 75.0,
-    "spend": 1757.67,
-    "impressions": 33081,
-    "clicks": 277,
-    "lpv": 213,
-    "cpl_real": 53.26,
-    "cpc": 6.35,
-    "conv_lpv_lead": 15.5
+    "medicos": 30,
+    "pct_medico": 76.9,
+    "spend": 1809.54,
+    "impressions": 34082,
+    "clicks": 283,
+    "lpv": 218,
+    "cpl_real": 50.27,
+    "cpc": 6.39,
+    "conv_lpv_lead": 16.5
   },
   "pace": {
     "full_days": 4,
     "paid_per_day": 6.0,
     "total_per_day": 6.8,
     "spend_per_day": 364.56,
-    "proj_paid": 93,
-    "proj_total": 104,
-    "proj_spend": 5403.3
+    "proj_paid": 96,
+    "proj_total": 106,
+    "proj_spend": 5455.16
   },
   "series": [
     {
@@ -67,46 +67,46 @@
     },
     {
       "day": "2026-07-07",
-      "leads_paid": 9,
-      "leads_total": 9,
-      "spend": 299.42,
-      "cum_paid": 33,
-      "cum_total": 36,
-      "cum_spend": 1757.67
+      "leads_paid": 12,
+      "leads_total": 12,
+      "spend": 351.29,
+      "cum_paid": 36,
+      "cum_total": 39,
+      "cum_spend": 1809.54
     }
   ],
   "ads": [
     {
       "ad": "ad01",
       "label": "Live Betina e Jorge",
-      "spend": 1035.59,
-      "leads": 14,
-      "lpv": 132,
-      "cpl": 73.97
+      "spend": 1069.65,
+      "leads": 16,
+      "lpv": 133,
+      "cpl": 66.85
     },
     {
       "ad": "ad02",
       "label": "Estetica ou Clinica",
-      "spend": 368.45,
-      "leads": 6,
-      "lpv": 35,
-      "cpl": 61.41
+      "spend": 378.05,
+      "leads": 7,
+      "lpv": 38,
+      "cpl": 54.01
     },
     {
       "ad": "ad04",
       "label": "Conversa de Dermatologista",
-      "spend": 214.78,
+      "spend": 222.15,
       "leads": 9,
-      "lpv": 33,
-      "cpl": 23.86
+      "lpv": 34,
+      "cpl": 24.68
     },
     {
       "ad": "ad03",
       "label": "Futuro da Dermato Clinica",
-      "spend": 138.85,
+      "spend": 139.69,
       "leads": 4,
       "lpv": 13,
-      "cpl": 34.71
+      "cpl": 34.92
     }
   ]
 }
